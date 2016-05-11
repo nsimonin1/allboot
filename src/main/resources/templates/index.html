@@ -21,6 +21,7 @@
 <body>
    <div class="container">
    <div>
+     Heure Service:<span id="heureServer"></span><br/>
      App Name:<span th:text="${settings.appName}"></span><br/>
      Version:<span th:text="${settings.version}"></span><br/>
      Auteur:<span th:text="${settings.author}"></span><br/>
@@ -82,6 +83,8 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script th:src="@{webjars/bootstrap/3.3.6/js/bootstrap.min.js}" src="js/bootstrap.min.js"></script>
     <script th:src="@{js/index.js}" ></script>
+    <script th:src="@{bower_components/sockjs/sockjs.min.js}"></script>
+    <script th:src="@{3rd/stomp.js}"></script>
     <script type="text/javascript">
     $(document).ready(function() {
        // $('#personTable').DataTable();

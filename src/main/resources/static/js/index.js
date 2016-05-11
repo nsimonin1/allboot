@@ -11,6 +11,17 @@ $(document).ready(function(){
 		});
 	});
 	
+	var messageList = document.getElementById("heureServer");
+    // socket endpoint
+    var socket = new SockJS('./stomp');
+    var stompClient = Stomp.over(socket);
+    stompClient.connect({}, function () {
+        ///topic/message endpoint
+        stompClient.subscribe("/topic/message", function (data) {
+            messageList.innerHTML = data.body;
+        });
+    });
+	
 
 
 
