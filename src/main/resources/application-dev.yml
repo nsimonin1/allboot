@@ -1,0 +1,15 @@
+spring:   
+  h2:
+    console:
+      enabled: true
+      path: /console
+      
+server: 
+   port: 8084
+   context-path: /demo
+debug: true
+logging:
+  level:
+    root: debug
+    org.springframework.web: debug
+    org.hibernate: error
