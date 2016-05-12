@@ -2,7 +2,7 @@ package org.simon.pascal.service.impl;
 
 import org.simon.pascal.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+//import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MessageService {
-	    @Autowired
-	    private SimpMessagingTemplate template;
+	   // @Autowired
+	   // private SimpMessagingTemplate template;
 
-	    @Scheduled(cron="*/59 * * * * MON-FRI")
+	   // @Scheduled(cron="*/59 * * * * MON-FRI")
 	    public void trigger() {
-	        this.template.convertAndSend("/topic/message", "" + DateUtil.getTime());
+	      //  this.template.convertAndSend("/topic/message", "" + DateUtil.getTime());
 	    }
 }

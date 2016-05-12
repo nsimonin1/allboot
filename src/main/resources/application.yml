@@ -1,6 +1,7 @@
 spring: 
   datasource:
-    url: jdbc:h2:${user.dir}/dbs/persondbs;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE;DB_CLOSE_ON_EXIT=FALSE
+#    url: jdbc:h2:${user.dir}/dbs/persondbs;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:~/persondb;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password: 
@@ -9,9 +10,10 @@ spring:
       ddl-auto: update
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     database: h2
-
+    
 demo: 
   app-name: myapp
   version: 0.0.1
   author: Simon Pascal Ngos
   lastest-update: 10/05/2016
+  

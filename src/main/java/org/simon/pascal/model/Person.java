@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Person {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	private Long id;
 	@NotNull
 	@Length(min = 3)

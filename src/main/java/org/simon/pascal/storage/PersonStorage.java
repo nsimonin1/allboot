@@ -11,6 +11,9 @@ import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
 
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.simon.pascal.model.Person;
 import org.simon.pascal.repositories.PersonRepository;
 import org.simon.pascal.service.PersonService;
@@ -26,11 +29,14 @@ public class PersonStorage {
   
  @Autowired
  private PersonService personService;
+ @Autowired
+ private IdentityService identityService;
   
   @PostConstruct
   public void init(){
 	  final boolean isEmpty=personService.isEmpty();
 	  if(isEmpty){
+		  initActiviti();
 		  for(int i=0;i<11;i++){
 			  final int randNom=((int) (Math.random()*195))%4;
 			  final String nom=NOMS[randNom];
@@ -86,6 +92,17 @@ public Person getPerson(long id) {
 		  throw new IllegalArgumentException("L'ID ne doit pas etre null");
 	  }
 	  return old.get();
+}
+
+private void initActiviti(){
+	Group group = identityService.newGroup("user");
+    group.setName("users");
+    group.setType("security-role");
+    identityService.saveGroup(group);
+
+    User admin = identityService.newUser("admin");
+    admin.setPassword("admin");
+    identityService.saveUser(admin);
 }
   
 }
