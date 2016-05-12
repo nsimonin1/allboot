@@ -14,10 +14,14 @@ import javax.annotation.PostConstruct;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.simon.pascal.api.Role;
 import org.simon.pascal.model.Person;
+import org.simon.pascal.model.Utilisateur;
 import org.simon.pascal.repositories.PersonRepository;
+import org.simon.pascal.repositories.UtilisateurRepository;
 import org.simon.pascal.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
@@ -31,6 +35,10 @@ public class PersonStorage {
  private PersonService personService;
  @Autowired
  private IdentityService identityService;
+ @Autowired
+ private PasswordEncoder passwordEncoder;
+ @Autowired
+ private UtilisateurRepository utilisateurRepository;
   
   @PostConstruct
   public void init(){
@@ -95,14 +103,30 @@ public Person getPerson(long id) {
 }
 
 private void initActiviti(){
-	Group group = identityService.newGroup("user");
-    group.setName("users");
+	Group group = identityService.newGroup(Role.ROLE_ADMIN.name());
+    group.setName("administrateur");
     group.setType("security-role");
     identityService.saveGroup(group);
-
+    group = identityService.newGroup(Role.ROLE_USER.name());
+    group.setName("utilisateur lamda");
+    group.setType("security-role");
+    identityService.saveGroup(group);
+   
     User admin = identityService.newUser("admin");
     admin.setPassword("admin");
     identityService.saveUser(admin);
+    final Utilisateur adminUser=new Utilisateur();
+    adminUser.setActif(true);
+    adminUser.setPassword(passwordEncoder.encode("admin"));
+    adminUser.setUsername("admin");
+    adminUser.setRole(Role.ROLE_ADMIN);
+    utilisateurRepository.save(adminUser);
+    final Utilisateur user=new Utilisateur();
+    user.setActif(true);
+    user.setPassword(passwordEncoder.encode("admin"));
+    user.setUsername("admin");
+    user.setRole(Role.ROLE_USER);
+    utilisateurRepository.save(user);
 }
   
 }
