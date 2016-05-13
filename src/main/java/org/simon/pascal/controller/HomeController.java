@@ -1,10 +1,13 @@
 package org.simon.pascal.controller;
 
+import java.io.IOException;
+
 import javax.validation.Valid;
 
 import org.simon.pascal.model.Person;
 import org.simon.pascal.settings.DemoSettings;
 import org.simon.pascal.storage.PersonStorage;
+import org.simon.pascal.util.MyFileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -60,7 +63,14 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/book.htm",method=RequestMethod.GET)
-	public String book(){ 		 
-		return "book";	
+	public ModelAndView book() throws IOException{
+		final ModelAndView mav=new ModelAndView("book");
+		final String z025="data:image/png;base64,"+MyFileUtils.generateBase64Image("static/images/z025.png");
+    	final String z026="data:image/png;base64,"+MyFileUtils.generateBase64Image("static/images/z026.png");
+    	final String z033="data:image/png;base64,"+MyFileUtils.generateBase64Image("static/images/z033.png");
+    	mav.addObject("z025", z025);
+    	mav.addObject("z026", z026);
+    	mav.addObject("z033", z033);
+		return mav;	
 	}
 }

@@ -10,6 +10,10 @@ spring:
       ddl-auto: update
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     database: h2
+  jmx:
+    enabled: false
+    default-domain: app
+  #  server: appServer
     
 demo: 
   app-name: myapp

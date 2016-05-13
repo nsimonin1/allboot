@@ -5,16 +5,24 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
+import org.simon.pascal.util.ImageTagProcessor;
 import org.springframework.web.servlet.resource.CssLinkResourceTransformer;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.Pipeline;
 import com.itextpdf.tool.xml.XMLWorker;
+import com.itextpdf.tool.xml.XMLWorkerFontProvider;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.itextpdf.tool.xml.css.CssFile;
+import com.itextpdf.tool.xml.css.CssFilesImpl;
 import com.itextpdf.tool.xml.css.StyleAttrCSSResolver;
+import com.itextpdf.tool.xml.html.CssAppliersImpl;
+import com.itextpdf.tool.xml.html.HTML;
+import com.itextpdf.tool.xml.html.TagProcessorFactory;
 import com.itextpdf.tool.xml.html.Tags;
 import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
 import com.itextpdf.tool.xml.pipeline.css.CssResolverPipeline;
@@ -91,5 +99,33 @@ public class ParseHtmlTable1 {
         document.close();
         return os.toByteArray();
 		}
+	}
+  
+  public static byte[] convertHtmlToPdf(String content) throws IOException, DocumentException {
+	  final ClassLoader classLoader = ParseHtmlTable1.class.getClassLoader();
+	    try(ByteArrayOutputStream file=new ByteArrayOutputStream();
+	    		InputStream is=new ByteArrayInputStream(content.getBytes());) { 
+	        final Document document = new Document();
+	        final PdfWriter writer = PdfWriter.getInstance(document, file);
+	        document.open();
+	        final TagProcessorFactory tagProcessorFactory = Tags.getHtmlTagProcessorFactory();
+	        tagProcessorFactory.removeProcessor(HTML.Tag.IMG);
+	        tagProcessorFactory.addProcessor(new ImageTagProcessor(), HTML.Tag.IMG);
+	        final CssFile cssFile=XMLWorkerHelper.getCSS(classLoader.getResourceAsStream(STYLE_FILE_NAME));
+	        final CssFilesImpl cssFiles = new CssFilesImpl(cssFile);
+	        //cssFiles.add(XMLWorkerHelper.getInstance().getDefaultCSS());
+	        final StyleAttrCSSResolver cssResolver = new StyleAttrCSSResolver(cssFiles);
+	        final HtmlPipelineContext hpc = new HtmlPipelineContext(new CssAppliersImpl(new XMLWorkerFontProvider()));
+	        hpc.setAcceptUnknown(true).autoBookmark(true).setTagFactory(tagProcessorFactory);
+	        final HtmlPipeline htmlPipeline = new HtmlPipeline(hpc, new PdfWriterPipeline(document, writer));
+	        final Pipeline<?> pipeline = new CssResolverPipeline(cssResolver, htmlPipeline);
+	        final XMLWorker worker = new XMLWorker(pipeline, true);
+	        final Charset charset = Charset.forName("UTF-8");
+	        final XMLParser xmlParser = new XMLParser(true, worker, charset);
+	        
+	        xmlParser.parse(is, charset);            
+	        document.close(); 
+	        return file.toByteArray();
+	    }
 	}
 }
